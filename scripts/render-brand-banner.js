@@ -7,7 +7,8 @@ const FONTS_DIR = path.resolve(ROOT, 'fonts');
 const ASSETS_DIR = path.resolve(ROOT, 'assets');
 const OUT_DIR = path.resolve(ROOT, 'brand', 'x-banner');
 
-const soLogo = fs.readFileSync(path.resolve(ASSETS_DIR, 'logo-icon.svg'), 'utf-8');
+const soIcon = fs.readFileSync(path.resolve(ASSETS_DIR, 'logo-icon.svg'), 'utf-8');
+const soText = fs.readFileSync(path.resolve(ASSETS_DIR, 'logo-text.svg'), 'utf-8');
 const fontsDir = FONTS_DIR.replace(/ /g, '%20');
 const bgPath = `file://${path.resolve(ASSETS_DIR, 'hero-bg.jpg').replace(/ /g, '%20')}`;
 
@@ -72,12 +73,8 @@ const html = `<!DOCTYPE html>
 
   .so-logo { width:36px; height:36px; }
   .so-logo svg { width:100%; height:100%; display:block; }
-
-  .brand-name {
-    font-family:'FK Grotesk Trial',sans-serif;
-    font-size:48px; font-weight:400;
-    letter-spacing:-1.5px; color:#fff;
-  }
+  .so-text { height:24px; }
+  .so-text svg { width:100%; height:100%; display:block; fill:white; }
 
   .url {
     position:absolute; bottom:68px; right:80px;
@@ -94,8 +91,8 @@ const html = `<!DOCTYPE html>
   <div class="divider divider-bottom"></div>
 
   <div class="center-content">
-    <div class="so-logo">${soLogo}</div>
-    <span class="brand-name">Smooth Operators</span>
+    <div class="so-logo">${soIcon}</div>
+    <div class="so-text">${soText}</div>
   </div>
 
   <span class="url">smoothoperators.dev</span>

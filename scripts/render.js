@@ -19,11 +19,16 @@ const ROOT = path.resolve(__dirname, '..');
 const FONTS_DIR = path.resolve(ROOT, 'fonts');
 const ASSETS_DIR = path.resolve(ROOT, 'assets');
 
-// ─── SO LOGO SVG ───
-const SO_LOGO_PATH = path.resolve(ASSETS_DIR, 'logo-icon.svg');
+// ─── SO LOGOS ───
+const SO_ICON_PATH = path.resolve(ASSETS_DIR, 'logo-icon.svg');
+const SO_TEXT_PATH = path.resolve(ASSETS_DIR, 'logo-text.svg');
 
-function loadSoLogo() {
-  return fs.readFileSync(SO_LOGO_PATH, 'utf-8');
+function loadSoIcon() {
+  return fs.readFileSync(SO_ICON_PATH, 'utf-8');
+}
+
+function loadSoText() {
+  return fs.readFileSync(SO_TEXT_PATH, 'utf-8');
 }
 
 function loadEvent(slug) {
@@ -40,7 +45,8 @@ function loadEvent(slug) {
 
 function buildHTML(format, event) {
   const { w, h, layout } = format;
-  const soLogo = loadSoLogo();
+  const soIcon = loadSoIcon();
+  const soText = loadSoText();
 
   // Scale factors based on format
   const s = Math.min(w, h) / 1200;
@@ -99,6 +105,7 @@ function buildHTML(format, event) {
     contentCSS = `
       .logo-row { position:absolute; top:${Math.round(h*0.14)}px; left:${bi}px; display:flex; align-items:center; gap:${Math.round(12*(h/500))}px; }
       .so-logo { width:${Math.round(22*(h/500))}px; height:${Math.round(22*(h/500))}px; }
+      .so-text { height:${Math.round(14*(h/500))}px; }
       .title { position:absolute; top:${Math.round(h*0.28)}px; left:${bi}px; font-size:${titleSize}px; letter-spacing:-4px; }
       .tagline { position:absolute; top:${Math.round(h*0.6)}px; left:${bi}px; font-size:${taglineSize}px; color:#848484; font-family:'FK Grotesk Trial',sans-serif; letter-spacing:-0.3px; }
       .meta { position:absolute; top:${Math.round(h*0.16)}px; right:${bi}px; font-size:${Math.round(16*(h/500))}px; line-height:1.7; text-align:right; }
@@ -115,6 +122,7 @@ function buildHTML(format, event) {
     contentCSS = `
       .logo-row { position:absolute; top:${inner}px; left:${inner}px; display:flex; align-items:center; gap:${Math.round(14*s)}px; }
       .so-logo { width:${logoSize}px; height:${logoSize}px; }
+      .so-text { height:${Math.round(logoSize * 0.6)}px; }
       .date-tag { position:absolute; top:${Math.round(inner + 4*s)}px; right:${inner}px; font-size:${dateSize}px; }
       .title { position:absolute; top:${titleTop}px; left:${inner}px; right:${inner}px; font-size:${titleSize}px; letter-spacing:${Math.round(-6*s)}px; }
       .tagline { position:absolute; top:${tagTop}px; left:${inner}px; right:${Math.round(inner*1.5)}px; font-size:${taglineSize}px; line-height:1.3; color:#848484; font-family:'FK Grotesk Trial',sans-serif; letter-spacing:-0.5px; }
@@ -132,6 +140,7 @@ function buildHTML(format, event) {
     contentCSS = `
       .logo-row { position:absolute; top:${Math.round(inner*0.92)}px; left:${inner}px; display:flex; align-items:center; gap:${Math.round(14*s)}px; }
       .so-logo { width:${logoSize}px; height:${logoSize}px; }
+      .so-text { height:${Math.round(logoSize * 0.6)}px; }
       .date-tag { position:absolute; top:${Math.round(inner*0.95)}px; right:${inner}px; font-size:${dateSize}px; }
       .title { position:absolute; top:${titleTop}px; left:${inner}px; right:${inner}px; font-size:${titleSize}px; letter-spacing:${Math.round(-6*s)}px; }
       .tagline { position:absolute; top:${tagTop}px; left:${inner}px; right:${Math.round(inner*1.5)}px; font-size:${taglineSize}px; line-height:1.3; color:#848484; font-family:'FK Grotesk Trial',sans-serif; letter-spacing:-0.5px; }
@@ -225,6 +234,7 @@ function buildHTML(format, event) {
   }
 
   .so-logo svg { width:100%; height:100%; display:block; }
+  .so-text svg { width:100%; height:100%; display:block; fill:white; }
   .collab-label { color:#555; }
 
   ${contentCSS}
@@ -238,8 +248,8 @@ function buildHTML(format, event) {
   <div class="divider divider-bottom"></div>
 
   <div class="logo-row">
-    <div class="so-logo">${soLogo}</div>
-    <span class="mono" style="font-size:${logoTextSize}px; font-weight:400;">smooth operators</span>
+    <div class="so-logo">${soIcon}</div>
+    <div class="so-text">${soText}</div>
   </div>
 
   ${layout !== 'banner'
