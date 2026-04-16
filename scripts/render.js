@@ -59,8 +59,12 @@ function buildHTML(format, event) {
   const dateSize = Math.round(22 * s);
   const collabLabelSize = Math.round(18 * s);
   const collabLogoH = Math.round(26 * s);
+  const cobrandLogoH = Math.round(36 * s);
+  const cobrandXSize = Math.round(20 * s);
   const urlSize = Math.round(20 * s);
   const metaSize = Math.round(24 * s);
+
+  const isCobrand = event.collab?.cobrand === true;
 
   // Title uses <br> for multiline, oneline for landscape
   const useMultiline = ['square', 'portrait', 'story', 'poster'].includes(layout);
@@ -167,6 +171,17 @@ function buildHTML(format, event) {
     ? `file://${path.resolve(ASSETS_DIR, event.collab.logo).replace(/ /g, '%20')}`
     : '';
 
+  // Cobrand CSS for the × separator
+  const cobrandCSS = isCobrand ? `
+    .cobrand-x {
+      font-family:'FK Grotesk Trial',sans-serif;
+      color:#555; font-weight:400;
+      font-size:${cobrandXSize}px;
+      margin:0 ${Math.round(20*s)}px;
+    }
+    .cobrand-logo { height:${cobrandLogoH}px; opacity:0.9; }
+  ` : '';
+
   const fontsDir = FONTS_DIR.replace(/ /g, '%20');
 
   return `<!DOCTYPE html>
@@ -238,6 +253,7 @@ function buildHTML(format, event) {
   .collab-label { color:#555; }
 
   ${contentCSS}
+  ${cobrandCSS}
 </style>
 </head>
 <body>
@@ -250,6 +266,10 @@ function buildHTML(format, event) {
   <div class="logo-row">
     <div class="so-logo">${soIcon}</div>
     <div class="so-text">${soText}</div>
+    ${isCobrand && collabLogoPath ? `
+    <span class="cobrand-x">&times;</span>
+    <img class="cobrand-logo" src="${collabLogoPath}" alt="${event.collab.name}">
+    ` : ''}
   </div>
 
   ${layout !== 'banner'
@@ -265,7 +285,7 @@ function buildHTML(format, event) {
     : ''
   }
 
-  ${event.collab ? `
+  ${event.collab && !isCobrand ? `
   <div class="collab">
     <span class="collab-label mono-muted" style="font-size:${collabLabelSize}px;">${event.collab.label}</span>
     <img class="ch-logo" src="${collabLogoPath}" alt="${event.collab.name}">
