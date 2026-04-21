@@ -333,4 +333,8 @@ async function main() {
   console.log(`\nAll images saved to ${outDir}`);
 }
 
-main().catch(err => { console.error(err); process.exit(1); });
+if (require.main === module) {
+  main().catch(err => { console.error(err); process.exit(1); });
+}
+
+module.exports = { FORMATS, buildHTML, loadEvent };
