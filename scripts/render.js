@@ -66,6 +66,10 @@ function buildHTML(format, event) {
 
   const isCobrand = event.collab?.cobrand === true;
 
+  // Partner logo sizing (used in contentCSS below)
+  const partnerLogoH = Math.round(layout === 'banner' ? 14 * (h / 500) : 22 * s);
+  const partnerGap = Math.round(layout === 'banner' ? 14 * (h / 500) : 20 * s);
+
   // Title uses <br> for multiline, oneline for landscape
   const useMultiline = ['square', 'portrait', 'story', 'poster'].includes(layout);
   const titleText = useMultiline ? event.title.replace(/\n/g, '<br>') : event.titleOneline;
@@ -75,30 +79,32 @@ function buildHTML(format, event) {
   let titleSize, taglineSize;
   switch (layout) {
     case 'square':
-      titleSize = Math.round(180 * s);
-      taglineSize = Math.round(32 * s);
+      titleSize = Math.round(140 * s);
+      taglineSize = Math.round(30 * s);
       break;
     case 'landscape':
-      titleSize = Math.round(130 * s);
+      titleSize = Math.round(100 * s);
       taglineSize = Math.round(22 * s);
       break;
     case 'banner':
-      titleSize = Math.round(130 * (Math.min(w, h) / 500));
+      titleSize = Math.round(Math.min(w * 0.065, h * 0.2));
       taglineSize = Math.round(22 * (Math.min(w, h) / 500));
       break;
     case 'portrait':
-      titleSize = Math.round(160 * s);
-      taglineSize = Math.round(30 * s);
+      titleSize = Math.round(124 * s);
+      taglineSize = Math.round(28 * s);
       break;
     case 'story':
-      titleSize = Math.round(180 * (w / 1200));
-      taglineSize = Math.round(36 * (w / 1200));
+      titleSize = Math.round(140 * (w / 1200));
+      taglineSize = Math.round(34 * (w / 1200));
       break;
     case 'poster':
-      titleSize = Math.round(200 * (w / 1200));
-      taglineSize = Math.round(40 * (w / 1200));
+      titleSize = Math.round(160 * (w / 1200));
+      taglineSize = Math.round(38 * (w / 1200));
       break;
   }
+
+  const kickerSize = Math.round((layout === 'banner' ? 14 * (h / 500) : 20 * s));
 
   // Layout-specific positioning
   let contentCSS;
@@ -113,9 +119,12 @@ function buildHTML(format, event) {
       .title { position:absolute; top:${Math.round(h*0.28)}px; left:${bi}px; font-size:${titleSize}px; letter-spacing:-4px; }
       .tagline { position:absolute; top:${Math.round(h*0.6)}px; left:${bi}px; font-size:${taglineSize}px; color:#848484; font-family:'FK Grotesk Trial',sans-serif; letter-spacing:-0.3px; }
       .meta { position:absolute; top:${Math.round(h*0.16)}px; right:${bi}px; font-size:${Math.round(16*(h/500))}px; line-height:1.7; text-align:right; }
+      .kicker { position:absolute; top:${Math.round(h*0.22)}px; left:${bi}px; font-size:${kickerSize}px; }
       .collab { position:absolute; bottom:${Math.round(h*0.14)}px; left:${bi}px; display:flex; align-items:center; gap:${Math.round(12*(h/500))}px; }
       .ch-logo { height:${Math.round(18*(h/500))}px; opacity:0.7; }
       .url { position:absolute; bottom:${Math.round(h*0.14)}px; right:${bi}px; font-size:${Math.round(16*(h/500))}px; }
+      .partners { position:absolute; bottom:${Math.round(h*0.14)}px; left:${bi}px; display:flex; align-items:center; gap:${partnerGap}px; opacity:0.55; }
+      .partner-logo { height:${partnerLogoH}px; width:auto; display:block; }
       .guide-l { left:${bp}px; } .guide-r { right:${bp}px; }
       .divider { left:${bp}px; right:${bp}px; }
       .divider-top { top:${bp}px; } .divider-bottom { bottom:${bp}px; }
@@ -128,12 +137,15 @@ function buildHTML(format, event) {
       .so-logo { width:${logoSize}px; height:${logoSize}px; }
       .so-text { height:${Math.round(logoSize * 0.6)}px; }
       .date-tag { position:absolute; top:${Math.round(inner + 4*s)}px; right:${inner}px; font-size:${dateSize}px; }
+      .kicker { position:absolute; top:${Math.round(titleTop - 48*s)}px; left:${inner}px; right:${inner}px; font-size:${kickerSize}px; }
       .title { position:absolute; top:${titleTop}px; left:${inner}px; right:${inner}px; font-size:${titleSize}px; letter-spacing:${Math.round(-6*s)}px; }
       .tagline { position:absolute; top:${tagTop}px; left:${inner}px; right:${Math.round(inner*1.5)}px; font-size:${taglineSize}px; line-height:1.3; color:#848484; font-family:'FK Grotesk Trial',sans-serif; letter-spacing:-0.5px; }
       .meta { position:absolute; bottom:${Math.round(inner*2)}px; left:${inner}px; font-size:${metaSize}px; line-height:1.7; }
       .collab { position:absolute; bottom:${inner}px; left:${inner}px; display:flex; align-items:center; gap:${Math.round(16*s)}px; }
       .ch-logo { height:${collabLogoH}px; opacity:0.7; }
       .url { position:absolute; bottom:${inner}px; right:${inner}px; font-size:${urlSize}px; }
+      .partners { position:absolute; bottom:${inner}px; left:${inner}px; display:flex; align-items:center; gap:${partnerGap}px; opacity:0.55; }
+      .partner-logo { height:${partnerLogoH}px; width:auto; display:block; }
       .guide-l { left:${pad}px; } .guide-r { right:${pad}px; }
       .divider { left:${pad}px; right:${pad}px; }
       .divider-top { top:${pad}px; } .divider-bottom { bottom:${pad}px; }
@@ -146,12 +158,15 @@ function buildHTML(format, event) {
       .so-logo { width:${logoSize}px; height:${logoSize}px; }
       .so-text { height:${Math.round(logoSize * 0.6)}px; }
       .date-tag { position:absolute; top:${Math.round(inner*0.95)}px; right:${inner}px; font-size:${dateSize}px; }
+      .kicker { position:absolute; top:${Math.round(titleTop - 44*s)}px; left:${inner}px; right:${inner}px; font-size:${kickerSize}px; }
       .title { position:absolute; top:${titleTop}px; left:${inner}px; right:${inner}px; font-size:${titleSize}px; letter-spacing:${Math.round(-6*s)}px; }
       .tagline { position:absolute; top:${tagTop}px; left:${inner}px; right:${Math.round(inner*1.5)}px; font-size:${taglineSize}px; line-height:1.3; color:#848484; font-family:'FK Grotesk Trial',sans-serif; letter-spacing:-0.5px; }
       .meta { position:absolute; bottom:${Math.round(inner*1.8)}px; left:${inner}px; font-size:${metaSize}px; line-height:1.7; }
       .collab { position:absolute; bottom:${Math.round(inner*0.92)}px; left:${inner}px; display:flex; align-items:center; gap:${Math.round(16*s)}px; }
       .ch-logo { height:${collabLogoH}px; opacity:0.7; }
       .url { position:absolute; bottom:${Math.round(inner*0.92)}px; right:${inner}px; font-size:${urlSize}px; }
+      .partners { position:absolute; bottom:${Math.round(inner*0.92)}px; left:${inner}px; display:flex; align-items:center; gap:${partnerGap}px; opacity:0.55; }
+      .partner-logo { height:${partnerLogoH}px; width:auto; display:block; }
       .guide-l { left:${pad}px; } .guide-r { right:${pad}px; }
       .divider { left:${pad}px; right:${pad}px; }
       .divider-top { top:${pad}px; } .divider-bottom { bottom:${pad}px; }
@@ -169,6 +184,15 @@ function buildHTML(format, event) {
   // Resolve collab logo
   const collabLogoPath = event.collab?.logo
     ? `file://${path.resolve(ASSETS_DIR, event.collab.logo).replace(/ /g, '%20')}`
+    : '';
+
+  // Resolve partner logos (subtle row, separate from main collab)
+  const partners = Array.isArray(event.partners) ? event.partners : [];
+  const partnersHTML = partners.length
+    ? partners.map(p => {
+        const src = `file://${path.resolve(ASSETS_DIR, p.logo).replace(/ /g, '%20')}`;
+        return `<img class="partner-logo" src="${src}" alt="${p.name}">`;
+      }).join('')
     : '';
 
   // Cobrand CSS for the × separator
@@ -277,6 +301,7 @@ function buildHTML(format, event) {
     : `<div class="meta mono-muted">${event.date} &nbsp;·&nbsp; ${event.time}<br>${event.venue}<br>${event.city}</div>`
   }
 
+  ${event.kicker ? `<div class="kicker mono-muted">${event.kicker}</div>` : ''}
   <div class="title display">${titleText}</div>
   <div class="tagline">${taglineText}</div>
 
@@ -291,6 +316,8 @@ function buildHTML(format, event) {
     <img class="ch-logo" src="${collabLogoPath}" alt="${event.collab.name}">
   </div>
   ` : ''}
+
+  ${partnersHTML ? `<div class="partners">${partnersHTML}</div>` : ''}
 
   <span class="url mono">${event.url}</span>
 </body>
